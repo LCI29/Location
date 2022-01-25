@@ -2,9 +2,11 @@ package test.clementl.android.location
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.lifecycle.ViewModelProvider
 import com.mapbox.android.core.location.LocationEngine
 import com.mapbox.android.core.location.LocationEngineProvider
 import com.mapbox.android.gestures.MoveGestureDetector
@@ -29,10 +31,9 @@ import java.lang.ref.WeakReference
 class MainActivity : AppCompatActivity() {
 
     private lateinit var locationPermissionHelper: LocationPermissionHelper
-    private lateinit var startPoint: Point
-    private lateinit var currentPoint: Point
     private var distance = 0.0
     private lateinit var distanceTextView: TextView
+    private lateinit var viewModel: MainViewModel
 
     private val onIndicatorBearingChangedListener = OnIndicatorBearingChangedListener {
         mapView.getMapboxMap().setCamera(CameraOptions.Builder().bearing(it).build())
@@ -41,12 +42,10 @@ class MainActivity : AppCompatActivity() {
     private val onIndicatorPositionChangedListener = OnIndicatorPositionChangedListener {
         mapView.getMapboxMap().setCamera(CameraOptions.Builder().center(it).build())
         mapView.gestures.focalPoint = mapView.getMapboxMap().pixelForCoordinate(it)
-        if (!this::startPoint.isInitialized) {
-            startPoint = it
+        if (!viewModel.isInitialized()) {
+            viewModel.setupStartPoint(it)
         }
-        currentPoint = it
-        distance = TurfMeasurement.distance(startPoint, currentPoint, TurfConstants.UNIT_METERS)
-        distanceTextView.text = String.format("%.1fm", distance)
+        viewModel.setupCurrentPoint(it)
     }
 
     private val onMoveListener = object : OnMoveListener {
@@ -67,12 +66,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         mapView = findViewById(R.id.mapView)
 //        mapView = MapView(this)
         distanceTextView = findViewById(R.id.distance_text)
         locationPermissionHelper = LocationPermissionHelper(WeakReference(this))
         locationPermissionHelper.checkPermissions {
             onMapReady()
+        }
+
+        viewModel.distanse.observe(this) {
+            distanceTextView.text = String.format("%.1fm", it)
         }
 
     }
