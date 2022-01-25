@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:mapbox="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
     <com.mapbox.maps.MapView
+        xmlns:mapbox="http://schemas.android.com/apk/res-auto"
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -21,7 +22,9 @@
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
-        android:textSize="20sp"
+        android:padding="4dp"
+        android:background="#55000000"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         tools:text="250m"
         />
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</FrameLayout>

@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         }
         currentPoint = it
         distance = TurfMeasurement.distance(startPoint, currentPoint, TurfConstants.UNIT_METERS)
-        distanceTextView.text = distance.toString()
+        distanceTextView.text = String.format("%.1fm", distance)
     }
 
     private val onMoveListener = object : OnMoveListener {
@@ -65,8 +65,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mapView = MapView(this)
+
         setContentView(R.layout.activity_main)
+        mapView = findViewById(R.id.mapView)
+//        mapView = MapView(this)
         distanceTextView = findViewById(R.id.distance_text)
         locationPermissionHelper = LocationPermissionHelper(WeakReference(this))
         locationPermissionHelper.checkPermissions {
@@ -129,8 +131,8 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, "onCameraTrackingDismissed", Toast.LENGTH_SHORT).show()
         mapView.location
             .removeOnIndicatorBearingChangedListener(onIndicatorBearingChangedListener)
-        mapView.location
-            .removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
+//        mapView.location
+//            .removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
         mapView.gestures.removeOnMoveListener(onMoveListener)
     }
 
