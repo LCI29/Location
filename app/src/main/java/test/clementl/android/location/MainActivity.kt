@@ -2,6 +2,7 @@ package test.clementl.android.location
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import com.mapbox.android.core.location.LocationEngine
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var startPoint: Point
     private lateinit var currentPoint: Point
     private var distance = 0.0
+    private lateinit var distanceTextView: TextView
 
     private val onIndicatorBearingChangedListener = OnIndicatorBearingChangedListener {
         mapView.getMapboxMap().setCamera(CameraOptions.Builder().bearing(it).build())
@@ -44,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         }
         currentPoint = it
         distance = TurfMeasurement.distance(startPoint, currentPoint, TurfConstants.UNIT_METERS)
+        distanceTextView.text = distance.toString()
     }
 
     private val onMoveListener = object : OnMoveListener {
@@ -63,7 +66,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mapView = MapView(this)
-        setContentView(mapView)
+        setContentView(R.layout.activity_main)
+        distanceTextView = findViewById(R.id.distance_text)
         locationPermissionHelper = LocationPermissionHelper(WeakReference(this))
         locationPermissionHelper.checkPermissions {
             onMapReady()
